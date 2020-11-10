@@ -5,6 +5,8 @@ const bcrypt = require('bcrypt')
 const router = express.Router()
 
 
+const taskModel = mongoose.model('task');
+
 router.post('/quotes', (req, res) => { 
     console.log(req.body)
     res.sendStatus(200)
