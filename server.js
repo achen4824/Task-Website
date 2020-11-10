@@ -12,8 +12,10 @@ app.use(cookieParser());
 app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({secret:"tasksecretkey", resave:true, saveUninitialized:true}));
+
+//allow directories to be served
+app.use(express.static(path.join(__dirname, 'public')));
 
 //mongoose models
 require('./models/task.js');

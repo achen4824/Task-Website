@@ -7,6 +7,11 @@ const router = express.Router()
 
 const taskModel = mongoose.model('task');
 
+router.get('/', function (req, res) {
+    res.render('index', {});
+});
+  
+
 router.post('/quotes', (req, res) => { 
     console.log(req.body)
     res.sendStatus(200)
