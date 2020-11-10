@@ -1,15 +1,16 @@
 <!DOCTYPE html>
- <html lang="en">
- <head>
-   <meta charset="UTF-8">
-   <title>MY APP</title>
- </head>
- <body>
-   May Node and Express be with you.
-   <form action="/quotes" method="POST">
-    <input type="text" placeholder="name" name="name">
-    <input type="text" placeholder="quote" name="quote">
-    <button type="submit">Submit</button>
-  </form>
- </body>
- </html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Task Tracker</title>
+</head>
+  <body>
+    <div id="like_button_container"></div>
+    <!-- Load React. -->
+    <script src="https://unpkg.com/react@16.4.1/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@16.4.1/umd/react-dom.production.min.js" crossorigin></script>
+
+    <!-- Load our React component. -->
+    <script src="scripts/like_button.js"></script>
+  </body>
+</html>

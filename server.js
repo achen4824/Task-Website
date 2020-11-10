@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser') // allows for req.body
 const mongoose = require('mongoose');
 const path = require('path');
+const session = require('express-session');
 const cookieParser = require('cookie-parser');
 const MongoClient = require('mongodb').MongoClient
 const app = express()
@@ -12,6 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}))
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(session({secret:"tasksecretkey", resave:true, saveUninitialized:true}));
 
 //mongoose models
 require('./models/task.js');

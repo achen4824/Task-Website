@@ -12,3 +12,9 @@ npm run dev
     "dev": "nodemon server.js"
  }
 ```
+
+**Setup Babel with JSX in src folder to output to public/scripts folder**
+```
+npm install babel-cli@6 babel-preset-react-app@3
+npx babel --watch src --out-dir ./public/scripts --presets react-app/prod
+```
