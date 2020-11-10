@@ -3,8 +3,7 @@ const path = require('path');
 module.exports = {
     devtool: 'source-map',
     entry: [
-        "./typescriptReact/app.tsx",
-        "./typescriptReact/num2.tsx"
+        "./typescriptReact/app.tsx"
     ],
     mode: "production",
     output: {
