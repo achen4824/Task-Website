@@ -2,7 +2,10 @@ const path = require('path');
 
 module.exports = {
     devtool: 'source-map',
-    entry: ["./typescriptReact/app.tsx","./typescriptReact/num2.tsx"],
+    entry: [
+        "./typescriptReact/app.tsx",
+        "./typescriptReact/num2.tsx"
+    ],
     mode: "production",
     output: {
         path: path.resolve(__dirname, 'public', 'scripts'),
