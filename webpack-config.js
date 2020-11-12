@@ -5,7 +5,7 @@ module.exports = {
     entry: [
         "./typescriptReact/app.tsx"
     ],
-    mode: "production",
+    mode: "development",
     output: {
         path: path.resolve(__dirname, 'public', 'scripts'),
         filename: "[name].js"

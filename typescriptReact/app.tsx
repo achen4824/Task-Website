@@ -2,15 +2,25 @@ declare var require: any
 
 var React = require('react');
 var ReactDOM = require('react-dom');
+import { Column } from './Column'
 
-console.log("Loaded")
+class Display extends React.Component{
+    render(){
+        return <h2></h2>
+    }
+}
 
-export class Hello extends React.Component {
+
+export default class Main extends React.Component {
     render() {
         return (
-            <h1>Welcome to React!!</h1>
+            <div id="container">
+                <Column name="ToBeCompleted" />
+                <Column name="Done" />
+                <Display initialdisplay="graph" />
+            </div>
         );
     }
 }
 
-ReactDOM.render(<Hello />, document.getElementById('root'));
+ReactDOM.render(<Main />, document.getElementById('root'));
