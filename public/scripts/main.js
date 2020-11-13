@@ -30155,9 +30155,10 @@ var Column = /** @class */ (function (_super) {
         fetch("/tasks")
             .then(function (res) { return res.json(); })
             .then(function (result) {
+            console.log(result);
             _this.setState({
                 isLoaded: true,
-                tasks: result.tasks
+                tasks: result
             });
         }, 
         // Note: it's important to handle errors here
@@ -30172,6 +30173,13 @@ var Column = /** @class */ (function (_super) {
     };
     Column.prototype.render = function () {
         var _a = this.state, error = _a.error, isLoaded = _a.isLoaded, tasks = _a.tasks, name = _a.name;
+        var taskshtml = tasks.map(function (element) {
+            return React.createElement("h3", null,
+                element.name,
+                " ",
+                element.value);
+        });
+        console.log(taskshtml);
         if (error) {
             return React.createElement("div", null,
                 "Error: ",
@@ -30181,16 +30189,54 @@ var Column = /** @class */ (function (_super) {
             return React.createElement("div", null, "Loading...");
         }
         else {
-            return (React.createElement("div", { class: "column" },
+            return (React.createElement("div", null,
                 React.createElement("h2", null, name),
-                React.createElement("ul", null, tasks.map(function (value, index) {
-                    return React.createElement("li", { key: index }, value);
-                }))));
+                taskshtml));
         }
     };
     return Column;
 }(React.Component));
 exports.Column = Column;
+
+
+/***/ }),
+
+/***/ "./typescriptReact/Display.tsx":
+/*!*************************************!*\
+  !*** ./typescriptReact/Display.tsx ***!
+  \*************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+Object.defineProperty(exports, "__esModule", { value: true });
+var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
+var Display = /** @class */ (function (_super) {
+    __extends(Display, _super);
+    function Display() {
+        return _super !== null && _super.apply(this, arguments) || this;
+    }
+    Display.prototype.render = function () {
+        return React.createElement("h2", null);
+    };
+    return Display;
+}(React.Component));
+exports.Display = Display;
 
 
 /***/ }),
@@ -30221,16 +30267,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 var Column_1 = __webpack_require__(/*! ./Column */ "./typescriptReact/Column.tsx");
-var Display = /** @class */ (function (_super) {
-    __extends(Display, _super);
-    function Display() {
-        return _super !== null && _super.apply(this, arguments) || this;
-    }
-    Display.prototype.render = function () {
-        return React.createElement("h2", null);
-    };
-    return Display;
-}(React.Component));
+var Display_1 = __webpack_require__(/*! ./Display */ "./typescriptReact/Display.tsx");
 var Main = /** @class */ (function (_super) {
     __extends(Main, _super);
     function Main() {
@@ -30240,7 +30277,7 @@ var Main = /** @class */ (function (_super) {
         return (React.createElement("div", { id: "container" },
             React.createElement(Column_1.Column, { name: "ToBeCompleted" }),
             React.createElement(Column_1.Column, { name: "Done" }),
-            React.createElement(Display, { initialdisplay: "graph" })));
+            React.createElement(Display_1.Display, { initialdisplay: "graph" })));
     };
     return Main;
 }(React.Component));

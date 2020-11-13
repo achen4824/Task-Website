@@ -17,4 +17,36 @@ router.post('/quotes', (req, res) => {
     res.sendStatus(200)
 })
 
+router.get('/tasks', function (req, res) {
+    taskModel.find({}, 'name value time', function(err, tasks) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(tasks);
+    });
+});
+
+//tobedone
+router.get('/tobedonetasks', function (req, res) {
+    taskModel.find({}, 'name value time', function(err, tasks) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(tasks);
+    });
+});
+
+router.get('/donetasks', function (req, res) {
+    taskModel.find({}, 'name value time', function(err, tasks) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(tasks);
+    });
+});
+  
+
 module.exports = router;

@@ -22,7 +22,7 @@ require('./models/task.js');
 
 //Server Setup
 const port = 3000
-const databaseUrl = 'mongodb://127.0.0.1:27017'
+const databaseUrl = 'mongodb://127.0.0.1:27017/tasks'
 
 //routes Setup
 var indexRouter = require('./routes/index');

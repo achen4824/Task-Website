@@ -15,13 +15,14 @@ export class Column extends React.Component{
     }
 
     componentDidMount() {
-        fetch("/tasks")
+        fetch("/"+this.state.name+"tasks")
             .then(res => res.json())
             .then(
                 (result) => {
+                    console.log(result)
                     this.setState({
                     isLoaded: true,
-                    tasks: result.tasks
+                    tasks: result
                     });
                 },
                 // Note: it's important to handle errors here
@@ -38,19 +39,21 @@ export class Column extends React.Component{
 
     render(){
         const { error, isLoaded, tasks, name } = this.state;
+        const taskshtml = tasks.map((element) => 
+            <h3>{element.name} {element.value}</h3>
+        );
+
+        console.log(taskshtml);
+
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
             return(
-                <div class="column">
+                <div>
                     <h2>{name}</h2>
-                    <ul>
-                        {tasks.map((value, index) => {
-                            return <li key={index}>{value}</li>
-                        })}
-                    </ul>
+                    {taskshtml}
                 </div>
             );
         }
