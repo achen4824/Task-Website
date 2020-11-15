@@ -30152,7 +30152,7 @@ var Column = /** @class */ (function (_super) {
     }
     Column.prototype.componentDidMount = function () {
         var _this = this;
-        fetch("/tasks")
+        fetch("/" + this.state.name + "tasks")
             .then(function (res) { return res.json(); })
             .then(function (result) {
             console.log(result);
@@ -30228,8 +30228,8 @@ var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 var Display = /** @class */ (function (_super) {
     __extends(Display, _super);
-    function Display() {
-        return _super !== null && _super.apply(this, arguments) || this;
+    function Display(props) {
+        return _super.call(this, props) || this;
     }
     Display.prototype.render = function () {
         return React.createElement("h2", null);
