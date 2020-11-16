@@ -32566,6 +32566,11 @@ var Slider = function (props) {
             size: down ? 1.1 : 1,
             immediate: function (name) { return down && name === 'x'; }
         });
+        var addOrRemove = function (delta, down) {
+            if (delta[0] > 0 && !down) {
+                console.log("ADD");
+            }
+        };
     }
     else {
         var trail = react_spring_1.useTrail(props.children.length, {
@@ -32574,13 +32579,20 @@ var Slider = function (props) {
             size: down ? 1.1 : 1,
             immediate: function (name) { return down && name === 'x'; }
         });
+        var addOrRemove = function (delta, down) {
+            if (delta[0] < 0 && !down) {
+                console.log("REMOVE");
+            }
+        };
     }
     var avSize = trail[0].x.interpolate({ map: Math.abs, range: [50, 300], output: ['scale(0.5)', 'scale(1)'], extrapolate: 'clamp' });
     return (React.createElement(React.Fragment, null, trail.map(function (_a, index) {
         var x = _a.x, bg = _a.bg, size = _a.size;
         return (React.createElement(react_spring_1.animated.div, __assign({}, bind(), { class: "item", style: { background: bg } }),
             React.createElement(react_spring_1.animated.div, { class: "av", style: { transform: avSize, justifySelf: delta[0] < 0 ? 'end' : 'start' } }),
-            React.createElement(react_spring_1.animated.div, { class: "fg", style: { transform: react_spring_1.interpolate([x, size], function (x, s) { return "translate3d(" + x + "px,0,0) scale(" + s + ")"; }) } }, props.children)));
+            React.createElement(react_spring_1.animated.div, { class: "fg", style: { transform: react_spring_1.interpolate([x, size], function (x, s) { return "translate3d(" + x + "px,0,0) scale(" + s + ")"; }) } },
+                addOrRemove(delta, down),
+                props.children)));
     })));
 };
 var Column = /** @class */ (function (_super) {

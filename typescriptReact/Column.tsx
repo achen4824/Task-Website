@@ -42,6 +42,11 @@ const Slider = function(props) {
             size: down ? 1.1 : 1,
             immediate: name => down && name === 'x'
         })
+        var addOrRemove = (delta,down)=>{
+            if(delta[0] > 0 && !down){
+                console.log("ADD");
+            }
+        }
     }else{
         var trail = useTrail(props.children.length, {
             x: down && delta[0] < 0 ? delta[0] : 0,
@@ -49,9 +54,15 @@ const Slider = function(props) {
             size: down ? 1.1 : 1,
             immediate: name => down && name === 'x'
         }) 
+        var addOrRemove = (delta,down)=>{
+            if(delta[0] < 0 && !down){
+                console.log("REMOVE");
+            }
+        }
     }
 
     const avSize = trail[0].x.interpolate({ map: Math.abs, range: [50, 300], output: ['scale(0.5)', 'scale(1)'], extrapolate: 'clamp' })
+
     
     return (
         <>
@@ -59,7 +70,7 @@ const Slider = function(props) {
             <animated.div {...bind()} class="item" style={{ background: bg }}>
                 <animated.div class="av" style={{ transform: avSize, justifySelf: delta[0] < 0 ? 'end' : 'start' }} />
                 <animated.div class="fg" style={{ transform: interpolate([x, size], (x, s) => `translate3d(${x}px,0,0) scale(${s})`) }}>
-                {console.log(delta[0])}
+                {addOrRemove(delta,down)}
                 {props.children}
                 </animated.div>
             </animated.div>
