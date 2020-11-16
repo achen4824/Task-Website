@@ -28,28 +28,74 @@ router.get('/tasks', function (req, res) {
         }
         res.send(tasks);
     });
-    resetTasks();
 });
 
 //tobedone
-router.get('/tobedonetasks', function (req, res) {
-    taskModel.find({}, 'name value time', function(err, tasks) {
+router.get('/tobecompleted', function (req, res) {
+    listsModel.findOne({name: 'tobecompleted'},'tasksid', function(err,listsres) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
         }
-        res.send(tasks);
+        taskModel.find({'_id': { $in: listsres.tasksid}}, 'name value time', function(err, tasks) {
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
+            }
+            console.log(tasks);
+            res.send(tasks);
+        });
     });
 });
 
-router.get('/donetasks', function (req, res) {
-    taskModel.find({}, 'name value time', function(err, tasks) {
+router.get('/done', function (req, res) {
+    listsModel.findOne({name: 'done'},'tasksid', function(err,listsres) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
         }
-        res.send(tasks);
+        taskModel.find({'_id': { $in: listsres.tasksid}}, 'name value time', function(err, tasks) {
+            if (err) {
+                console.log(err);
+                return res.sendStatus(500);
+            }
+            console.log(tasks);
+            res.send(tasks);
+        });
     });
+});
+
+
+router.post('/add', async function (req, res) {
+    await listsModel.updateOne({name: "done"},{$push: {tasksid: req.body._id}},function(err) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+    });
+    await listsModel.updateOne({name: "tobecompleted"},{$pull: {tasksid: req.body._id}},function(err) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+    });
+    res.sendStatus(200);
+});
+
+router.post('/remove', async function (req, res) {
+    await listsModel.updateOne({name: "tobecompleted"},{$push: {tasksid: req.body._id}},function(err) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+    });
+    await listsModel.updateOne({name: "done"},{$pull: {tasksid: req.body._id}},function(err) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+    });
+    res.sendStatus(200);
 });
 
 //reset tasks every day

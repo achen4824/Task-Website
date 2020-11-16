@@ -32559,7 +32559,7 @@ var Trail = function (props) {
 };
 var Slider = function (props) {
     var _a = react_with_gesture_1.useGesture(), bind = _a[0], _b = _a[1], delta = _b.delta, down = _b.down;
-    if (props.name === "ToBeCompleted") {
+    if (props.name === "tobecompleted") {
         var trail = react_spring_1.useTrail(props.children.length, {
             x: down && delta[0] > 0 ? delta[0] : 0,
             bg: "linear-gradient(120deg, " + (delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586') + " 100%)",
@@ -32567,8 +32567,8 @@ var Slider = function (props) {
             immediate: function (name) { return down && name === 'x'; }
         });
         var addOrRemove = function (delta, down) {
-            if (delta[0] > 0 && !down) {
-                console.log("ADD");
+            if (delta[0] > 200 && !down) {
+                props.updatefunc("/add", props.id);
             }
         };
     }
@@ -32580,8 +32580,8 @@ var Slider = function (props) {
             immediate: function (name) { return down && name === 'x'; }
         });
         var addOrRemove = function (delta, down) {
-            if (delta[0] < 0 && !down) {
-                console.log("REMOVE");
+            if (delta[0] < -200 && !down) {
+                props.updatefunc("/remove", props.id);
             }
         };
     }
@@ -32608,9 +32608,24 @@ var Column = /** @class */ (function (_super) {
         };
         return _this;
     }
+    Column.prototype.moveItemToOtherlist = function (command, element) {
+        var _this = this;
+        var tasks = this.state.tasks;
+        var requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id: element._id })
+        };
+        fetch(command, requestOptions).then(function () {
+            tasks.splice(tasks.indexOf(element), 1);
+            _this.setState({
+                isLoaded: true
+            });
+        });
+    };
     Column.prototype.componentDidMount = function () {
         var _this = this;
-        fetch("/tasks")
+        fetch("/" + this.state.name)
             .then(function (res) { return res.json(); })
             .then(function (result) {
             _this.setState({
@@ -32629,10 +32644,11 @@ var Column = /** @class */ (function (_super) {
         });
     };
     Column.prototype.render = function () {
+        var _this = this;
         var _a = this.state, error = _a.error, isLoaded = _a.isLoaded, tasks = _a.tasks, name = _a.name, open = _a.open;
         var ptr = this;
-        var taskshtml = tasks.map(function (element) {
-            return React.createElement(Slider, { name: name },
+        var taskshtml = tasks.map(function (element, index) {
+            return React.createElement(Slider, { name: name, id: element, updatefunc: _this.moveItemToOtherlist.bind(_this) },
                 React.createElement(Item_1.Item, { title: element.name, value: element.value, time: element.time }));
         });
         if (error) {
@@ -32776,8 +32792,8 @@ var Main = /** @class */ (function (_super) {
     }
     Main.prototype.render = function () {
         return (React.createElement("div", { id: "container" },
-            React.createElement(Column_1.Column, { name: "ToBeCompleted" }),
-            React.createElement(Column_1.Column, { name: "Done" }),
+            React.createElement(Column_1.Column, { name: "tobecompleted" }),
+            React.createElement(Column_1.Column, { name: "done" }),
             React.createElement(Display_1.Display, { initialdisplay: "graph" })));
     };
     return Main;

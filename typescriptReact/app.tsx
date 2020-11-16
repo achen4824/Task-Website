@@ -10,8 +10,8 @@ export default class Main extends React.Component {
     render() {
         return (
             <div id="container">
-                <Column name="ToBeCompleted" />
-                <Column name="Done" />
+                <Column name="tobecompleted" />
+                <Column name="done" />
                 <Display initialdisplay="graph" />
             </div>
         );

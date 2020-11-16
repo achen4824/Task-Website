@@ -33,9 +33,10 @@ const Trail = function(props){
     )
 }
 
+
 const Slider = function(props) {
     const [bind, { delta, down }] = useGesture()
-    if(props.name === "ToBeCompleted"){
+    if(props.name === "tobecompleted"){
         var trail = useTrail(props.children.length, {
             x: down && delta[0] > 0 ? delta[0] : 0,
             bg: `linear-gradient(120deg, ${delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586'} 100%)`,
@@ -43,8 +44,8 @@ const Slider = function(props) {
             immediate: name => down && name === 'x'
         })
         var addOrRemove = (delta,down)=>{
-            if(delta[0] > 0 && !down){
-                console.log("ADD");
+            if(delta[0] > 200 && !down){
+                props.updatefunc("/add",props.id);
             }
         }
     }else{
@@ -55,8 +56,8 @@ const Slider = function(props) {
             immediate: name => down && name === 'x'
         }) 
         var addOrRemove = (delta,down)=>{
-            if(delta[0] < 0 && !down){
-                console.log("REMOVE");
+            if(delta[0] < -200 && !down){
+                props.updatefunc("/remove",props.id);
             }
         }
     }
@@ -91,9 +92,24 @@ export class Column extends React.Component{
         };
     }
 
+    moveItemToOtherlist(command,element){
+        const { tasks } = this.state;
+        const requestOptions = {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ _id: element._id })
+        };
+        fetch( command, requestOptions).then(() => {
+            tasks.splice(tasks.indexOf(element),1);
+            this.setState({
+                isLoaded: true
+            });
+        });
+    }   
+
 
     componentDidMount() {
-        fetch("/tasks")
+        fetch("/"+this.state.name)
             .then(res => res.json())
             .then(
                 (result) => {
@@ -117,8 +133,8 @@ export class Column extends React.Component{
     render(){
         const { error, isLoaded, tasks, name, open } = this.state;
         const ptr =  this;
-        const taskshtml = tasks.map((element) => 
-            <Slider name={name}>
+        const taskshtml = tasks.map((element , index) => 
+            <Slider name={name} id={element} updatefunc={this.moveItemToOtherlist.bind(this)}>
                 <Item title={element.name} value={element.value} time={element.time} />
             </Slider>
         );
