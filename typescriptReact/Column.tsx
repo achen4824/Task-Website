@@ -59,6 +59,7 @@ const Slider = function(props) {
             <animated.div {...bind()} class="item" style={{ background: bg }}>
                 <animated.div class="av" style={{ transform: avSize, justifySelf: delta[0] < 0 ? 'end' : 'start' }} />
                 <animated.div class="fg" style={{ transform: interpolate([x, size], (x, s) => `translate3d(${x}px,0,0) scale(${s})`) }}>
+                {console.log(delta[0])}
                 {props.children}
                 </animated.div>
             </animated.div>
