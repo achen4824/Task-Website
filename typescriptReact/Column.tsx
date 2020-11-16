@@ -24,7 +24,7 @@ const Trail = function(props){
         {trail.map(({ x, height, ...rest }, index) => (
             <animated.div
             key={items[index]}
-            className="trails-text"
+            className="trails-text noselect"
             style={{ ...rest, transform: x.interpolate((x) => `translate3d(0,${x}px,0)`) }}>
             <animated.div style={{ height }}>{items[index]}</animated.div>
             </animated.div>

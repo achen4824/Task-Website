@@ -32553,7 +32553,7 @@ var Trail = function (props) {
     });
     return (React.createElement("div", { className: "trails-main" }, trail.map(function (_a, index) {
         var x = _a.x, height = _a.height, rest = __rest(_a, ["x", "height"]);
-        return (React.createElement(react_spring_1.animated.div, { key: items[index], className: "trails-text", style: __assign(__assign({}, rest), { transform: x.interpolate(function (x) { return "translate3d(0," + x + "px,0)"; }) }) },
+        return (React.createElement(react_spring_1.animated.div, { key: items[index], className: "trails-text noselect", style: __assign(__assign({}, rest), { transform: x.interpolate(function (x) { return "translate3d(0," + x + "px,0)"; }) }) },
             React.createElement(react_spring_1.animated.div, { style: { height: height } }, items[index])));
     })));
 };
