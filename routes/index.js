@@ -28,6 +28,7 @@ router.get('/tasks', function (req, res) {
         }
         res.send(tasks);
     });
+    resetTasks();
 });
 
 //tobedone
@@ -52,12 +53,32 @@ router.get('/donetasks', function (req, res) {
 });
 
 //reset tasks every day
-var rule = new schedule.RecurrenceRule();
-rule.day = 1;
- 
-var j = schedule.scheduleJob(rule, function(){
-  console.log('The answer to life, the universe, and everything!');
+var j = schedule.scheduleJob({hour: 00, minute: 00}, function(){
+  resetTasks();
 });
+
+function resetTasks(){
+
+    taskModel.find({}, '_id', function(err, taskids) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+
+        listsModel.updateOne({name: 'tobecompleted'}, {$set: {"tasksid": taskids}}, function(err) {
+            if (err) {
+                console.log(err);
+                //return res.sendStatus(500);
+            }
+        });
+    });
+    listsModel.updateOne({name: 'done'}, {$set: {"tasksid": []}}, function(err) {
+        if (err) {
+            console.log(err);
+            //return res.sendStatus(500);
+        }
+    });
+}
 
 
 

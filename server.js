@@ -19,6 +19,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 //mongoose models
 require('./models/task.js');
+require('./models/lists.js');
 
 //Server Setup
 const port = 3000
@@ -28,7 +29,7 @@ const databaseUrl = 'mongodb://127.0.0.1:27017/tasks'
 var indexRouter = require('./routes/index');
 
 
-const connection = mongoose.connect(databaseUrl, { useUnifiedTopology: true, useNewUrlParser: true}, (err) => {
+const connection = mongoose.connect(databaseUrl, { useUnifiedTopology: true, useNewUrlParser: true, useFindAndModify: false }, (err) => {
     if (err) throw err;
     console.log("Connected to database at " + databaseUrl)
 
