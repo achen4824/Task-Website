@@ -14,9 +14,9 @@ export class Item extends React.Component{
     }
     render(){
         return (
-            <div>
+            <>
                 {this.state.title}
-            </div>
+            </>
         )
     }
 }

@@ -2,11 +2,11 @@ declare var require: any
 
 var React = require('react');
 var ReactDOM = require('react-dom');
-import { useTrail, animated } from 'react-spring';
+import { useTrail, animated, useSpring, interpolate } from 'react-spring';
+import { useGesture } from 'react-with-gesture';
 import {Item } from './Item';
 
 const Trail = function(props){
-    console.log(props.children)
     const items = props.children;
     const open = props.open;
     
@@ -21,7 +21,6 @@ const Trail = function(props){
 
     return (
     <div className="trails-main">
-        <div>
         {trail.map(({ x, height, ...rest }, index) => (
             <animated.div
             key={items[index]}
@@ -30,8 +29,41 @@ const Trail = function(props){
             <animated.div style={{ height }}>{items[index]}</animated.div>
             </animated.div>
         ))}
-        </div>
     </div>
+    )
+}
+
+const Slider = function(props) {
+    const [bind, { delta, down }] = useGesture()
+    if(props.name === "ToBeCompleted"){
+        var trail = useTrail(props.children.length, {
+            x: down && delta[0] > 0 ? delta[0] : 0,
+            bg: `linear-gradient(120deg, ${delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586'} 100%)`,
+            size: down ? 1.1 : 1,
+            immediate: name => down && name === 'x'
+        })
+    }else{
+        var trail = useTrail(props.children.length, {
+            x: down && delta[0] < 0 ? delta[0] : 0,
+            bg: `linear-gradient(120deg, ${delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586'} 100%)`,
+            size: down ? 1.1 : 1,
+            immediate: name => down && name === 'x'
+        }) 
+    }
+
+    const avSize = trail[0].x.interpolate({ map: Math.abs, range: [50, 300], output: ['scale(0.5)', 'scale(1)'], extrapolate: 'clamp' })
+    
+    return (
+        <>
+            {trail.map(({ x, bg, size }, index) => (
+            <animated.div {...bind()} class="item" style={{ background: bg }}>
+                <animated.div class="av" style={{ transform: avSize, justifySelf: delta[0] < 0 ? 'end' : 'start' }} />
+                <animated.div class="fg" style={{ transform: interpolate([x, size], (x, s) => `translate3d(${x}px,0,0) scale(${s})`) }}>
+                {props.children}
+                </animated.div>
+            </animated.div>
+            ))}
+        </>
     )
   }
 
@@ -53,7 +85,6 @@ export class Column extends React.Component{
             .then(res => res.json())
             .then(
                 (result) => {
-                    console.log(result)
                     this.setState({
                     isLoaded: true,
                     tasks: result
@@ -75,22 +106,21 @@ export class Column extends React.Component{
         const { error, isLoaded, tasks, name, open } = this.state;
         const ptr =  this;
         const taskshtml = tasks.map((element) => 
-            <Item title={element.name} value={element.value} time={element.time} />
+            <Slider name={name}>
+                <Item title={element.name} value={element.value} time={element.time} />
+            </Slider>
         );
-
-        console.log(taskshtml);
 
         if (error) {
             return <div>Error: {error.message}</div>;
         } else if (!isLoaded) {
             return <div>Loading...</div>;
         } else {
-            console.log("RUN")
             return(
                 <div class="column">
                     <h2>{name}</h2>
                     <Trail open={open} onClick={()=>{ptr.setState({open: !open})}}>
-                        {taskshtml}
+                            {taskshtml}
                     </Trail>
                 </div>
             );

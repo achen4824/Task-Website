@@ -28562,6 +28562,324 @@ const extendedAnimated = apply(domElements);
 
 /***/ }),
 
+/***/ "./node_modules/react-with-gesture/dist/react-with-gesture.es.js":
+/*!***********************************************************************!*\
+  !*** ./node_modules/react-with-gesture/dist/react-with-gesture.es.js ***!
+  \***********************************************************************/
+/*! exports provided: withGesture, Gesture, useGesture */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "withGesture", function() { return withGesture; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "Gesture", function() { return Gesture; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "useGesture", function() { return useGesture; });
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "./node_modules/react/index.js");
+/* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+
+
+function _extends() {
+  _extends = Object.assign || function (target) {
+    for (var i = 1; i < arguments.length; i++) {
+      var source = arguments[i];
+
+      for (var key in source) {
+        if (Object.prototype.hasOwnProperty.call(source, key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+
+    return target;
+  };
+
+  return _extends.apply(this, arguments);
+}
+
+function _inheritsLoose(subClass, superClass) {
+  subClass.prototype = Object.create(superClass.prototype);
+  subClass.prototype.constructor = subClass;
+  subClass.__proto__ = superClass;
+}
+
+function _assertThisInitialized(self) {
+  if (self === void 0) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return self;
+}
+
+var touchMove = 'touchmove';
+var touchEnd = 'touchend';
+var mouseMove = 'mousemove';
+var mouseUp = 'mouseup';
+var defaultProps = {
+  touch: true,
+  mouse: true,
+  passive: {
+    passive: true
+  },
+  onAction: undefined,
+  onDown: undefined,
+  onUp: undefined,
+  onMove: undefined
+};
+var initialState = {
+  event: undefined,
+  args: undefined,
+  temp: undefined,
+  target: undefined,
+  time: undefined,
+  xy: [0, 0],
+  delta: [0, 0],
+  initial: [0, 0],
+  previous: [0, 0],
+  direction: [0, 0],
+  local: [0, 0],
+  lastLocal: [0, 0],
+  velocity: 0,
+  distance: 0,
+  down: false,
+  first: true,
+  shiftKey: false
+};
+
+function handlers(set, props, args) {
+  if (props === void 0) {
+    props = {};
+  }
+
+  // Common handlers
+  var handleUp = function handleUp(event, shiftKey) {
+    set(function (state) {
+      var newProps = _extends({}, state, {
+        down: false,
+        first: false
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      if (props.onUp) props.onUp(newProps);
+      return _extends({}, newProps, {
+        event: event,
+        shiftKey: shiftKey,
+        lastLocal: state.local,
+        temp: temp || newProps.temp
+      });
+    });
+  };
+
+  var handleDown = function handleDown(event) {
+    var _ref = event.touches ? event.touches[0] : event,
+        target = _ref.target,
+        pageX = _ref.pageX,
+        pageY = _ref.pageY,
+        shiftKey = _ref.shiftKey;
+
+    set(function (state) {
+      var lastLocal = state.lastLocal || initialState.lastLocal;
+
+      var newProps = _extends({}, initialState, {
+        event: event,
+        target: target,
+        args: args,
+        lastLocal: lastLocal,
+        shiftKey: shiftKey,
+        local: lastLocal,
+        xy: [pageX, pageY],
+        initial: [pageX, pageY],
+        previous: [pageX, pageY],
+        down: true,
+        time: Date.now(),
+        cancel: function cancel() {
+          stop();
+          requestAnimationFrame(function () {
+            return handleUp(event);
+          });
+        }
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      if (props.onDown) props.onDown(newProps);
+      return _extends({}, newProps, {
+        temp: temp
+      });
+    });
+  };
+
+  var handleMove = function handleMove(event) {
+    var _ref2 = event.touches ? event.touches[0] : event,
+        pageX = _ref2.pageX,
+        pageY = _ref2.pageY,
+        shiftKey = _ref2.shiftKey;
+
+    set(function (state) {
+      var time = Date.now();
+      var x_dist = pageX - state.xy[0];
+      var y_dist = pageY - state.xy[1];
+      var delta_x = pageX - state.initial[0];
+      var delta_y = pageY - state.initial[1];
+      var distance = Math.sqrt(delta_x * delta_x + delta_y * delta_y);
+      var len = Math.sqrt(x_dist * x_dist + y_dist * y_dist);
+      var scalar = 1 / (len || 1);
+
+      var newProps = _extends({}, state, {
+        event: event,
+        time: time,
+        shiftKey: shiftKey,
+        xy: [pageX, pageY],
+        delta: [delta_x, delta_y],
+        local: [state.lastLocal[0] + pageX - state.initial[0], state.lastLocal[1] + pageY - state.initial[1]],
+        velocity: len / (time - state.time),
+        distance: distance,
+        direction: [x_dist * scalar, y_dist * scalar],
+        previous: state.xy,
+        first: false
+      });
+
+      var temp = props.onAction && props.onAction(newProps);
+      if (props.onMove) props.onMove(newProps);
+      return _extends({}, newProps, {
+        temp: temp || newProps.temp
+      });
+    });
+  };
+
+  var onDown = function onDown(e) {
+    if (props.mouse) {
+      window.addEventListener(mouseMove, handleMove, props.passive);
+      window.addEventListener(mouseUp, onUp, props.passive);
+    }
+
+    if (props.touch) {
+      window.addEventListener(touchMove, handleMove, props.passive);
+      window.addEventListener(touchEnd, onUp, props.passive);
+    }
+
+    handleDown(e);
+  };
+
+  var stop = function stop() {
+    if (props.mouse) {
+      window.removeEventListener(mouseMove, handleMove, props.passive);
+      window.removeEventListener(mouseUp, onUp, props.passive);
+    }
+
+    if (props.touch) {
+      window.removeEventListener(touchMove, handleMove, props.passive);
+      window.removeEventListener(touchEnd, onUp, props.passive);
+    }
+  };
+
+  var onUp = function onUp(e) {
+    var shiftKey = e.shiftKey;
+    stop();
+    handleUp(e, shiftKey);
+  };
+
+  var output = {};
+  var capture = props.passive.capture ? 'Capture' : '';
+
+  if (props.mouse) {
+    output["onMouseDown" + capture] = onDown;
+  }
+
+  if (props.touch) {
+    output["onTouchStart" + capture] = onDown;
+  }
+
+  return output;
+}
+
+var Gesture =
+/*#__PURE__*/
+function (_React$Component) {
+  _inheritsLoose(Gesture, _React$Component);
+
+  function Gesture(props) {
+    var _this;
+
+    _this = _React$Component.call(this, props) || this;
+    _this.state = initialState;
+
+    var set = _this.setState.bind(_assertThisInitialized(_assertThisInitialized(_this)));
+
+    if (props.onAction) {
+      _this._state = initialState;
+
+      set = function set(cb) {
+        return _this._state = cb(_this._state);
+      };
+    }
+
+    _this.handlers = handlers(set, props);
+    return _this;
+  }
+
+  var _proto = Gesture.prototype;
+
+  _proto.render = function render() {
+    var _this$props = this.props,
+        style = _this$props.style,
+        children = _this$props.children,
+        className = _this$props.className;
+    return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement("div", _extends({}, this.handlers, {
+      style: _extends({
+        display: 'contents'
+      }, style),
+      className: className
+    }), children(this.state));
+  };
+
+  return Gesture;
+}(react__WEBPACK_IMPORTED_MODULE_0___default.a.Component);
+
+Gesture.defaultProps = defaultProps;
+
+var withGesture = function withGesture(config) {
+  return function (Wrapped) {
+    return function (props) {
+      return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Gesture, _extends({}, config, {
+        children: function children(gestureProps) {
+          return react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement(Wrapped, _extends({}, props, gestureProps));
+        }
+      }));
+    };
+  };
+};
+
+function useGesture(props) {
+  var _React$useState = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(initialState),
+      state = _React$useState[0],
+      set = _React$useState[1];
+
+  var transientState = react__WEBPACK_IMPORTED_MODULE_0___default.a.useRef(initialState);
+  if (typeof props === 'function') props = {
+    onAction: props
+  };
+  props = _extends({}, defaultProps, props);
+
+  var _React$useState2 = react__WEBPACK_IMPORTED_MODULE_0___default.a.useState(function () {
+    return function () {
+      for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+        args[_key] = arguments[_key];
+      }
+
+      return handlers(props.onAction ? function (cb) {
+        return transientState.current = cb(transientState.current);
+      } : set, props, args);
+    };
+  }),
+      spread = _React$useState2[0];
+
+  return props.onAction ? spread : [spread, state];
+}
+
+
+
+
+/***/ }),
+
 /***/ "./node_modules/react/cjs/react.development.js":
 /*!*****************************************************!*\
   !*** ./node_modules/react/cjs/react.development.js ***!
@@ -32221,9 +32539,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var React = __webpack_require__(/*! react */ "./node_modules/react/index.js");
 var ReactDOM = __webpack_require__(/*! react-dom */ "./node_modules/react-dom/index.js");
 var react_spring_1 = __webpack_require__(/*! react-spring */ "./node_modules/react-spring/web.js");
+var react_with_gesture_1 = __webpack_require__(/*! react-with-gesture */ "./node_modules/react-with-gesture/dist/react-with-gesture.es.js");
 var Item_1 = __webpack_require__(/*! ./Item */ "./typescriptReact/Item.tsx");
 var Trail = function (props) {
-    console.log(props.children);
     var items = props.children;
     var open = props.open;
     var trail = react_spring_1.useTrail(items.length, {
@@ -32233,12 +32551,37 @@ var Trail = function (props) {
         height: open ? 50 : 0,
         from: { opacity: 0, x: 20, height: 0 },
     });
-    return (React.createElement("div", { className: "trails-main" },
-        React.createElement("div", null, trail.map(function (_a, index) {
-            var x = _a.x, height = _a.height, rest = __rest(_a, ["x", "height"]);
-            return (React.createElement(react_spring_1.animated.div, { key: items[index], className: "trails-text", style: __assign(__assign({}, rest), { transform: x.interpolate(function (x) { return "translate3d(0," + x + "px,0)"; }) }) },
-                React.createElement(react_spring_1.animated.div, { style: { height: height } }, items[index])));
-        }))));
+    return (React.createElement("div", { className: "trails-main" }, trail.map(function (_a, index) {
+        var x = _a.x, height = _a.height, rest = __rest(_a, ["x", "height"]);
+        return (React.createElement(react_spring_1.animated.div, { key: items[index], className: "trails-text", style: __assign(__assign({}, rest), { transform: x.interpolate(function (x) { return "translate3d(0," + x + "px,0)"; }) }) },
+            React.createElement(react_spring_1.animated.div, { style: { height: height } }, items[index])));
+    })));
+};
+var Slider = function (props) {
+    var _a = react_with_gesture_1.useGesture(), bind = _a[0], _b = _a[1], delta = _b.delta, down = _b.down;
+    if (props.name === "ToBeCompleted") {
+        var trail = react_spring_1.useTrail(props.children.length, {
+            x: down && delta[0] > 0 ? delta[0] : 0,
+            bg: "linear-gradient(120deg, " + (delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586') + " 100%)",
+            size: down ? 1.1 : 1,
+            immediate: function (name) { return down && name === 'x'; }
+        });
+    }
+    else {
+        var trail = react_spring_1.useTrail(props.children.length, {
+            x: down && delta[0] < 0 ? delta[0] : 0,
+            bg: "linear-gradient(120deg, " + (delta[0] < 0 ? '#f093fb 0%, #f5576c' : '#96fbc4 0%, #f9f586') + " 100%)",
+            size: down ? 1.1 : 1,
+            immediate: function (name) { return down && name === 'x'; }
+        });
+    }
+    var avSize = trail[0].x.interpolate({ map: Math.abs, range: [50, 300], output: ['scale(0.5)', 'scale(1)'], extrapolate: 'clamp' });
+    return (React.createElement(React.Fragment, null, trail.map(function (_a, index) {
+        var x = _a.x, bg = _a.bg, size = _a.size;
+        return (React.createElement(react_spring_1.animated.div, __assign({}, bind(), { class: "item", style: { background: bg } }),
+            React.createElement(react_spring_1.animated.div, { class: "av", style: { transform: avSize, justifySelf: delta[0] < 0 ? 'end' : 'start' } }),
+            React.createElement(react_spring_1.animated.div, { class: "fg", style: { transform: react_spring_1.interpolate([x, size], function (x, s) { return "translate3d(" + x + "px,0,0) scale(" + s + ")"; }) } }, props.children)));
+    })));
 };
 var Column = /** @class */ (function (_super) {
     __extends(Column, _super);
@@ -32258,7 +32601,6 @@ var Column = /** @class */ (function (_super) {
         fetch("/tasks")
             .then(function (res) { return res.json(); })
             .then(function (result) {
-            console.log(result);
             _this.setState({
                 isLoaded: true,
                 tasks: result
@@ -32278,9 +32620,9 @@ var Column = /** @class */ (function (_super) {
         var _a = this.state, error = _a.error, isLoaded = _a.isLoaded, tasks = _a.tasks, name = _a.name, open = _a.open;
         var ptr = this;
         var taskshtml = tasks.map(function (element) {
-            return React.createElement(Item_1.Item, { title: element.name, value: element.value, time: element.time });
+            return React.createElement(Slider, { name: name },
+                React.createElement(Item_1.Item, { title: element.name, value: element.value, time: element.time }));
         });
-        console.log(taskshtml);
         if (error) {
             return React.createElement("div", null,
                 "Error: ",
@@ -32290,7 +32632,6 @@ var Column = /** @class */ (function (_super) {
             return React.createElement("div", null, "Loading...");
         }
         else {
-            console.log("RUN");
             return (React.createElement("div", { class: "column" },
                 React.createElement("h2", null, name),
                 React.createElement(Trail, { open: open, onClick: function () { ptr.setState({ open: !open }); } }, taskshtml)));
@@ -32380,7 +32721,7 @@ var Item = /** @class */ (function (_super) {
         return _this;
     }
     Item.prototype.render = function () {
-        return (React.createElement("div", null, this.state.title));
+        return (React.createElement(React.Fragment, null, this.state.title));
     };
     return Item;
 }(React.Component));
